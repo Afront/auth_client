@@ -1,6 +1,7 @@
 use std::io;
 use std::io::Write;
 use std::process;
+use rpassword::read_password;
 
 fn abort() {
 	println!("AHHHHHHHHH");
@@ -34,8 +35,12 @@ fn signup() {
 
 	print!("Please enter your password: ");
 	io::stdout().flush().unwrap();
-	io::stdin().read_line(&mut password)
-			.expect("Failed to read line");
+	read_password().unwrap();
+	
+	print!("Please enter your password again: ");
+	io::stdout().flush().unwrap();
+	read_password().unwrap();
+	
 
 	println!("You want to sign up? Well, not today.");
 
