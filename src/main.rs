@@ -4,6 +4,17 @@ use std::process;
 use rpassword::read_password;
 use argonautica::Hasher;
 
+fn hash(password: &str) -> &str {
+	let mut hasher = Hasher::default();
+	let hash = hasher
+		.with_password(password)
+		.with_secret_key("this will not be the secret key, just a placeholder")
+		.hash()
+		.unwrap();
+	println!("{}", &hash);
+	hash
+}
+
 fn abort() {
 	println!("AHHHHHHHHH");
 	process::exit(0);
@@ -18,6 +29,8 @@ fn signin() {
 	println!("You want to sign in? Well, not today.");
 	abort();
 }
+
+
 
 fn signup() {
 	loop {
@@ -42,14 +55,6 @@ fn signup() {
 		print!("Please enter your password again: ");
 		io::stdout().flush().unwrap();
 		if password == read_password().unwrap() {
-			let mut hasher = Hasher::default();
-			let hash = hasher
-				.with_password(password)
-				.with_secret_key("this will not be the secret key, just a placeholder")
-				.hash()
-				.unwrap();
-
-			println!("{}", &hash);
 			break;
 		}
 	}
