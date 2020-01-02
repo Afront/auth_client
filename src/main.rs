@@ -2,6 +2,7 @@ use std::io;
 use std::io::Write;
 use std::process;
 use rpassword::read_password;
+use argonautica::Hasher;
 
 fn abort() {
 	println!("AHHHHHHHHH");
@@ -41,6 +42,14 @@ fn signup() {
 		print!("Please enter your password again: ");
 		io::stdout().flush().unwrap();
 		if password == read_password().unwrap() {
+			let mut hasher = Hasher::default();
+			let hash = hasher
+				.with_password(password)
+				.with_secret_key("this will not be the secret key, just a placeholder")
+				.hash()
+				.unwrap();
+
+			println!("{}", &hash);
 			break;
 		}
 	}
