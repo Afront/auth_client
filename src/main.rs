@@ -19,36 +19,39 @@ fn signin() {
 }
 
 fn signup() {
-	let mut id = String::new();
-	let mut email = String::new();
-	let mut password = String::new();
 
-	print!("Please enter your ID: ");
-	io::stdout().flush().unwrap();
-	io::stdin().read_line(&mut id)
-			.expect("Failed to read line");
+	loop {
+		print!("\x1B[2J");
+		let mut id = String::new();
+		let mut email = String::new();
 
-	print!("Please enter your email: ");
-	io::stdout().flush().unwrap();
-	io::stdin().read_line(&mut email)
-			.expect("Failed to read line");
+		print!("Please enter your ID: ");
+		io::stdout().flush().unwrap();
+		io::stdin().read_line(&mut id)
+				.expect("Failed to read line");
 
-	print!("Please enter your password: ");
-	io::stdout().flush().unwrap();
-	read_password().unwrap();
-	
-	print!("Please enter your password again: ");
-	io::stdout().flush().unwrap();
-	read_password().unwrap();
-	
+		print!("Please enter your email: ");
+		io::stdout().flush().unwrap();
+		io::stdin().read_line(&mut email)
+				.expect("Failed to read line");
 
-	println!("You want to sign up? Well, not today.");
-
-	abort();
+		print!("Please enter your password: ");
+		io::stdout().flush().unwrap();
+		let password = read_password().unwrap();
+		
+		print!("Please enter your password again: ");
+		io::stdout().flush().unwrap();
+		if password == read_password().unwrap() {
+			break;
+		}
+	}
+	//println!("You want to sign up? Well, not today.");
 }
 
-fn main() {
-	loop {
+fn login_screen(){
+	let mut not_authenticated = true;
+	while not_authenticated {
+		print!("\x1B[2J");
 		print!("Hello! Would you like to (R)egister or (S)ign in? ");
 		io::stdout().flush().unwrap();
 		let mut input = String::new();
@@ -60,7 +63,15 @@ fn main() {
 				"SIGN UP" | "SIGNUP" | "REGISTER" | "R" => signup(),
 				"SIGN IN" | "SIGNIN" | "LOGIN" | "LOG IN" | "S" => signin(),
 				_  => continue,
-		};		
+		};
 	}
+}
 
+fn do_something(){
+
+}
+
+fn main() {
+	login_screen();
+	do_something();
 }
