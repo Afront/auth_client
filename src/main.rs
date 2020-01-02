@@ -18,7 +18,27 @@ fn signin() {
 }
 
 fn signup() {
+	let mut id = String::new();
+	let mut email = String::new();
+	let mut password = String::new();
+
+	print!("Please enter your ID: ");
+	io::stdout().flush().unwrap();
+	io::stdin().read_line(&mut id)
+			.expect("Failed to read line");
+
+	print!("Please enter your email: ");
+	io::stdout().flush().unwrap();
+	io::stdin().read_line(&mut email)
+			.expect("Failed to read line");
+
+	print!("Please enter your password: ");
+	io::stdout().flush().unwrap();
+	io::stdin().read_line(&mut password)
+			.expect("Failed to read line");
+
 	println!("You want to sign up? Well, not today.");
+
 	abort();
 }
 
