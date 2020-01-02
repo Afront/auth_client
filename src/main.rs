@@ -19,7 +19,6 @@ fn signin() {
 }
 
 fn signup() {
-
 	loop {
 		print!("\x1B[2J");
 		let mut id = String::new();
