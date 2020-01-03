@@ -1,13 +1,24 @@
 use std::io;
 use std::io::Write;
 use std::process;
-use rpassword::read_password;
 use argonautica::Hasher;
+use rpassword::read_password;
+use serde::{Deserialize, Serialize};
+use serde_json::Result;
 
-fn hash(password: &str) -> &str {
+#[derive(Serialize, Deserialize)]
+struct User {
+	id: String,
+	email: String,
+	password: String,
+}
+
+
+fn hash(password: String) -> String {
 	let mut hasher = Hasher::default();
 	let hash = hasher
 		.with_password(password)
+		.with_salt("this will not be the actual salt")
 		.with_secret_key("this will not be the secret key, just a placeholder")
 		.hash()
 		.unwrap();
@@ -55,6 +66,13 @@ fn signup() {
 		print!("Please enter your password again: ");
 		io::stdout().flush().unwrap();
 		if password == read_password().unwrap() {
+			let user = User {
+				id: id,
+				email: email,
+				password: hash(password)	
+			};
+			let user_json = serde_json::to_string(&user);
+			println!("{:?}", user_json);
 			break;
 		}
 	}
@@ -77,6 +95,9 @@ fn login_screen(){
 				"SIGN IN" | "SIGNIN" | "LOGIN" | "LOG IN" | "S" => signin(),
 				_  => continue,
 		};
+		if 1+1==2 { //will be an authentication code or something like that later on...
+			not_authenticated = false;
+		}
 	}
 }
 
