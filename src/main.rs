@@ -76,7 +76,6 @@ fn signup() {
 			break;
 		}
 	}
-	//println!("You want to sign up? Well, not today.");
 }
 
 fn login_screen(){
