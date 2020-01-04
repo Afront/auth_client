@@ -23,9 +23,6 @@ enum LoginResult {
 	SignedUp(bool),
 }
 
-
-
-
 fn hash(password: String) -> String {
 	let mut hasher = Hasher::default();
 	let hash = hasher
@@ -113,7 +110,7 @@ async fn signup() -> Result<LoginResult, LoginResult> {
 	x
 }
 
-async fn login_screen() -> io::Result<()>{
+async fn login_screen() -> reqwest::Result<()>{
 	let mut not_authenticated = true;
 	while not_authenticated {
 		print!("\x1B[2J");
@@ -142,6 +139,7 @@ fn do_something(){
 }
 **/
 
-async fn main() -> io::Result<()> {
+#[tokio::main]
+async fn main() -> Result<(),reqwest::Error> {
 	login_screen().await
 }
