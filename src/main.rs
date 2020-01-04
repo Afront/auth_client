@@ -28,11 +28,18 @@ impl std::convert::From<serde_json::Error> for Error {
 
 
 #[derive(Serialize, Deserialize)]
-struct User {
-	id: String,
+struct NewUser {
+	username: String,
 	email: String,
 	password: String,
 }
+
+#[derive(Serialize, Deserialize)]
+struct OldUser {
+	id: String,
+	password: String,
+}
+
 
 #[derive(Debug)]
 enum LoginResult {
@@ -41,7 +48,6 @@ enum LoginResult {
 	Quit,
 	SignedUp,
 }
-
 
 
 fn hash(password: String) -> String {
@@ -57,7 +63,7 @@ fn hash(password: String) -> String {
 }
 
 fn abort() -> Result<LoginResult, Error>{
-	println!("AHHHHHHHHH");
+	println!("See you next time!");
 	Ok(LoginResult::Quit)
 }
 
@@ -71,8 +77,27 @@ fn help() -> Result<LoginResult, Error> {
 	}
 }
 
-fn signin() -> Result<LoginResult, Error> {
-	println!("You want to sign in? Well, not today.");
+async fn signin() -> Result<LoginResult, Error> {
+	loop {
+		print!("\x1B[2J");
+		let mut id = String::new();
+
+		print!("Please enter your username or your email: ");
+		io::stdout().flush().unwrap();
+		io::stdin().read_line(&mut id)
+				.expect("Failed to read line");
+
+		print!("Please enter your password: ");
+		io::stdout().flush().unwrap();
+		
+		let user = OldUser {
+			id: id,
+			password: hash(read_password().unwrap())	
+		};
+		let user_json = serde_json::to_string(&user)?;
+		println!("{:?}", user_json);
+		send_json(user_json).await?;
+	}
 	Ok(LoginResult::AuthCode(String::from("some_auth_code")))
 }
 
@@ -94,12 +119,12 @@ async fn send_json(user_json: String) -> Result<Response, Error> {
 async fn signup() -> Result<LoginResult, Error> {
 	loop {
 		print!("\x1B[2J");
-		let mut id = String::new();
+		let mut username = String::new();
 		let mut email = String::new();
 
-		print!("Please enter your ID: ");
+		print!("Please enter your username: ");
 		io::stdout().flush().unwrap();
-		io::stdin().read_line(&mut id)
+		io::stdin().read_line(&mut username)
 				.expect("Failed to read line");
 
 		print!("Please enter your email: ");
@@ -114,8 +139,8 @@ async fn signup() -> Result<LoginResult, Error> {
 		print!("Please enter your password again: ");
 		io::stdout().flush().unwrap();
 		if password == read_password().unwrap() {
-			let user = User {
-				id: id,
+			let user = NewUser {
+				username: username,
 				email: email,
 				password: hash(password)	
 			};
@@ -139,7 +164,7 @@ async fn login_screen() -> Result<LoginResult, Error>{
 				"ABORT" | "EXIT" | "Q" | "QUIT" => abort(),
 				"HELP" | "H" => help(),
 				"SIGN UP" | "SIGNUP" | "REGISTER" | "R" => signup().await,
-				"SIGN IN" | "SIGNIN" | "LOGIN" | "LOG IN" | "S" => signin(),
+				"SIGN IN" | "SIGNIN" | "LOGIN" | "LOG IN" | "S" => signin().await,
 				_  => continue,
 		} {
 			Ok(LoginResult::Quit) => process::exit(0),
