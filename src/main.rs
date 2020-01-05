@@ -2,6 +2,7 @@ use std::{env, io};
 use std::io::Write;
 use std::process;
 use argonautica::Hasher;
+use promptly::{prompt}; //use promptly::{prompt, prompt_default};
 use reqwest::Response;
 use rpassword::read_password;
 use serde::{Deserialize, Serialize};
@@ -26,7 +27,6 @@ impl std::convert::From<serde_json::Error> for Error {
 	}
 }
 
-
 #[derive(Serialize, Deserialize)]
 struct NewUser {
 	username: String,
@@ -49,6 +49,20 @@ enum LoginResult {
 	SignedUp,
 }
 
+#[derive(Debug, PartialEq)]
+enum PasswordStep {
+	First,
+	Second
+}
+
+
+fn password_prompt(choice: PasswordStep) -> String {
+	print!("Please enter your password{}: " , if choice == PasswordStep::Second {" again"} else {""});
+	io::stdout().flush().unwrap();
+	read_password().unwrap()
+}
+
+
 
 fn hash(password: String) -> String {
 	let mut hasher = Hasher::default();
@@ -61,6 +75,7 @@ fn hash(password: String) -> String {
 	println!("{}", &hash);
 	hash
 }
+
 
 fn abort() -> Result<LoginResult, Error>{
 	println!("See you next time!");
@@ -80,23 +95,16 @@ fn help() -> Result<LoginResult, Error> {
 async fn signin() -> Result<LoginResult, Error> {
 	loop {
 		print!("\x1B[2J");
-		let mut id = String::new();
+		let id: String = prompt("Please enter your username or your email");
 
-		print!("Please enter your username or your email: ");
-		io::stdout().flush().unwrap();
-		io::stdin().read_line(&mut id)
-				.expect("Failed to read line");
-
-		print!("Please enter your password: ");
-		io::stdout().flush().unwrap();
-		
 		let user = OldUser {
 			id: id,
-			password: hash(read_password().unwrap())	
+			password: hash(password_prompt(PasswordStep::First))	
 		};
 		let user_json = serde_json::to_string(&user)?;
 		println!("{:?}", user_json);
 		send_json(user_json).await?;
+		break; //For testing, to prevent warning since this part is not finished yet
 	}
 	Ok(LoginResult::AuthCode(String::from("some_auth_code")))
 }
@@ -119,26 +127,11 @@ async fn send_json(user_json: String) -> Result<Response, Error> {
 async fn signup() -> Result<LoginResult, Error> {
 	loop {
 		print!("\x1B[2J");
-		let mut username = String::new();
-		let mut email = String::new();
+		let username: String = prompt("Please enter your username");
+		let email: String = prompt("Please enter your email");
 
-		print!("Please enter your username: ");
-		io::stdout().flush().unwrap();
-		io::stdin().read_line(&mut username)
-				.expect("Failed to read line");
-
-		print!("Please enter your email: ");
-		io::stdout().flush().unwrap();
-		io::stdin().read_line(&mut email)
-				.expect("Failed to read line");
-
-		print!("Please enter your password: ");
-		io::stdout().flush().unwrap();
-		let password = read_password().unwrap();
-		
-		print!("Please enter your password again: ");
-		io::stdout().flush().unwrap();
-		if password == read_password().unwrap() {
+		let password = password_prompt(PasswordStep::First);
+		if password == password_prompt(PasswordStep::Second) {
 			let user = NewUser {
 				username: username,
 				email: email,
