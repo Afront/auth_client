@@ -82,6 +82,11 @@ async fn signin() -> Result<LoginResult, Error> {
 		print!("\x1B[2J");
 		let mut id = String::new();
 
+		print!("Do you have the auth device with you? (Y/n) ");
+		io::stdout().flush().unwrap();
+		io::stdin().read_line(&mut )
+				.expect("Failed to read line");
+
 		print!("Please enter your username or your email: ");
 		io::stdout().flush().unwrap();
 		io::stdin().read_line(&mut id)
