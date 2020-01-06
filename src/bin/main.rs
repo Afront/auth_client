@@ -1,7 +1,6 @@
 use login_screen::Result;
 use login_screen::LoginResult;
 use login_screen::options::{abort,help,signup,signin};
-
 use promptly::{prompt}; //use promptly::{prompt, prompt_default};
 use std::process;
 
@@ -25,11 +24,10 @@ async fn login_screen() -> Result<LoginResult>{
 	}
 }
 
-/**
-fn do_something(){
 
+fn do_something(){
+	unimplemented!();
 }
-**/
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -38,5 +36,7 @@ async fn main() -> Result<()> {
 		Err(_) => (),
 	}
 
+	do_something();
+	
 	Ok(())
 }
