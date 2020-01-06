@@ -5,7 +5,7 @@ use promptly::prompt;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
-struct OldUser {
+struct User {
 	id: String,
 	password: String,
 }
@@ -15,7 +15,7 @@ pub async fn signin() -> Result<LoginResult, Error> {
 		print!("\x1B[2J");
 		let id: String = prompt("Please enter your username or your email");
 
-		let user = OldUser {
+		let user = User {
 			id: id,
 			password: hash(password_prompt(PasswordStep::First))	
 		};

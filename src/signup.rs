@@ -7,7 +7,7 @@ use std::env;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
-struct NewUser {
+struct User {
 	username: String,
 	email: String,
 	password: String,
@@ -36,7 +36,7 @@ pub async fn signup() -> Result<LoginResult, Error> {
 
 		let password = password_prompt(PasswordStep::First);
 		if password == password_prompt(PasswordStep::Second) {
-			let user = NewUser {
+			let user = User {
 				username: username,
 				email: email,
 				password: hash(password)	
