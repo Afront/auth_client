@@ -18,7 +18,7 @@ pub mod help;
 pub mod signin;
 pub mod signup;
 
-pub fn hash(password: String) -> String {
+fn hash(password: String) -> String {
 	let mut hasher = Hasher::default();
 	let hash = hasher
 		.with_password(password)
