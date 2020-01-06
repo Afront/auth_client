@@ -54,14 +54,13 @@ async fn is_username_invalid(username: &String) -> Result<bool> {
 			return Ok(true);
 		}
 
-/*
+	let client = reqwest::Client::new();
 	let server_url = env::var("SERVER_URL").expect("SERVER_URL must be set");
 	let duplicate_checker = client.post(&server_url)
-		//.body(user_json)
-		.body("hi!")
+		.body(username)
 		.send()
 		.await?;
-*/
+
 	Ok(false)
 }
 
