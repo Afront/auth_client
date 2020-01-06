@@ -9,15 +9,6 @@ pub enum LoginResult {
 	SignedUp,
 }
 
-pub mod error;
-mod io;
-
-//these 4 modules might be put under one module (options) later on
-pub mod abort;
-pub mod help;
-pub mod signin;
-pub mod signup;
-
 fn hash(password: String) -> String {
 	let mut hasher = Hasher::default();
 	let hash = hasher
@@ -29,3 +20,12 @@ fn hash(password: String) -> String {
 	println!("{}", &hash);
 	hash
 }
+
+pub mod error;
+mod io;
+
+//these 4 modules might be put under one module (options) later on
+pub mod abort;
+pub mod help;
+pub mod signin;
+pub mod signup;
