@@ -8,7 +8,6 @@ edition = "2018"
 
 [dependencies]
 argonautica = "0.2.0"
-check-if-email-exists = "0.6.0"
 promptly = "0.2.0"
 quiche = "0.1.0"
 rpassword = "4.0.3"
