@@ -1,9 +1,6 @@
 use login_screen::Result;
 use login_screen::LoginResult;
-use login_screen::abort::abort;
-use login_screen::help::help;
-use login_screen::signup::signup;
-use login_screen::signin::signin;
+use login_screen::options::{abort,help,signup,signin};
 
 use promptly::{prompt}; //use promptly::{prompt, prompt_default};
 use std::process;

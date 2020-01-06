@@ -25,8 +25,14 @@ fn hash(password: String) -> String {
 pub mod error;
 mod io;
 
-//these 4 modules might be put under one module (options) later on
-pub mod abort;
-pub mod help;
-pub mod signin;
-pub mod signup;
+pub mod options { 
+	pub use abort::abort;
+	pub use help::help;
+	pub use signin::signin;
+	pub use signup::signup;
+	
+	pub mod abort;
+	pub mod help;
+	pub mod signin;
+	pub mod signup;
+}

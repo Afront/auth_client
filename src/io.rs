@@ -7,8 +7,7 @@ pub enum PasswordStep {
 }
 
 pub fn password_prompt(choice: PasswordStep) -> String {
-	print!("Please enter your password{}: " , if choice == PasswordStep::Second {" again"} else {""});
-	
+	print!("Please enter your password{}: " , if choice == PasswordStep::Second {" again"} else {""});	
 	std::io::stdout().flush().unwrap();
 	rpassword::read_password().unwrap()
 }
