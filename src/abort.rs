@@ -1,4 +1,4 @@
-use crate::error::Error;
+use crate::Error;
 use crate::LoginResult;
 
 pub fn abort() -> Result<LoginResult, Error>{

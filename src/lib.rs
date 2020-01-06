@@ -1,4 +1,5 @@
-pub use self::error::Error;
+pub use error::Error;
+pub use error::Result;
 use argonautica::Hasher;
 
 #[derive(Debug)]

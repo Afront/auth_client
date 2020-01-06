@@ -1,14 +1,14 @@
+use login_screen::Result;
 use login_screen::LoginResult;
 use login_screen::abort::abort;
 use login_screen::help::help;
 use login_screen::signup::signup;
 use login_screen::signin::signin;
-use login_screen::error::Error;
 
 use promptly::{prompt}; //use promptly::{prompt, prompt_default};
 use std::process;
 
-async fn login_screen() -> Result<LoginResult, Error>{
+async fn login_screen() -> Result<LoginResult>{
 	loop {
 		print!("\x1B[2J");
 		let input: String = prompt("Hello! Would you like to (R)egister or (S)ign in? ");
@@ -35,7 +35,7 @@ fn do_something(){
 **/
 
 #[tokio::main]
-async fn main() -> Result<(),Error> {
+async fn main() -> Result<()> {
 	match login_screen().await {
 		Ok(_) => (),
 		Err(_) => (),

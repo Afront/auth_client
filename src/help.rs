@@ -1,4 +1,4 @@
-use crate::error::Error;
+use crate::Error;
 use crate::LoginResult;
 
 pub fn help() -> Result<LoginResult, Error> {

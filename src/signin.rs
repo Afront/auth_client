@@ -1,4 +1,4 @@
-use crate::error::Error;
+use crate::Result;
 pub use crate::io::{PasswordStep, password_prompt};
 use crate::{hash,LoginResult};
 use promptly::prompt;
@@ -10,7 +10,7 @@ struct User {
 	password: String,
 }
 
-pub async fn signin() -> Result<LoginResult, Error> {
+pub async fn signin() -> Result<LoginResult> {
 	loop {
 		print!("\x1B[2J");
 		let id: String = prompt("Please enter your username or your email");

@@ -1,4 +1,4 @@
-use crate::error::Error;
+use crate::Result;
 pub use crate::io::{PasswordStep, password_prompt};
 use crate::{hash,LoginResult};
 use promptly::prompt;
@@ -13,7 +13,7 @@ struct User {
 	password: String,
 }
 
-pub async fn send_json(user_json: String) -> Result<Response, Error> {
+pub async fn send_json(user_json: String) -> Result<Response> {
 	let client = reqwest::Client::new();
 	let server_url = env::var("SERVER_URL").expect("SERVER_URL must be set");
 
@@ -28,7 +28,7 @@ pub async fn send_json(user_json: String) -> Result<Response, Error> {
 	Ok(res)
 }
 
-pub async fn signup() -> Result<LoginResult, Error> {
+pub async fn signup() -> Result<LoginResult> {
 	loop {
 		print!("\x1B[2J");
 		let username: String = prompt("Please enter your username");
