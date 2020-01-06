@@ -2,9 +2,16 @@ use crate::LoginResult;
 
 #[derive(Debug)]
 pub enum Error {
+	Addr(addr::Error),
 	Login(LoginResult),
 	Reqwest(reqwest::Error),
-	SerdeJSON(serde_json::error::Error),
+	SerdeJSON(serde_json::Error),
+}
+
+impl std::convert::From<addr::Error> for Error {
+	fn from(err: addr::Error) -> Error {
+		Error::Addr(err)
+	}
 }
 
 impl std::convert::From<reqwest::Error> for Error {

@@ -1,6 +1,7 @@
 use crate::Result;
 pub use crate::io::{PasswordStep, password_prompt};
 use crate::{hash,LoginResult};
+use addr::{Email, Host};
 use promptly::prompt;
 use reqwest::Response;
 use std::env;
@@ -13,7 +14,20 @@ struct User {
 	password: String,
 }
 
-pub async fn send_json(user_json: String) -> Result<Response> {
+async fn validate_email(email: &String) -> Result<bool> {
+	return match mailchecker::is_valid(&email) {
+		true => match &email.parse::<Email>()?.host() {
+			Host::Domain(name) => Ok(name.root().suffix().is_known()),
+			Host::Ip(_) => Ok(true),
+		},
+		false => Ok(false),
+	}
+
+
+}
+
+
+async fn send_json(user_json: String) -> Result<Response> {
 	let client = reqwest::Client::new();
 	let server_url = env::var("SERVER_URL").expect("SERVER_URL must be set");
 
@@ -34,17 +48,19 @@ pub async fn signup() -> Result<LoginResult> {
 		let username: String = prompt("Please enter your username");
 		let email: String = prompt("Please enter your email");
 
-		let password = password_prompt(PasswordStep::First);
-		if password == password_prompt(PasswordStep::Second) {
-			let user = User {
-				username: username,
-				email: email,
-				password: hash(password)	
-			};
-			let user_json = serde_json::to_string(&user)?;
-			println!("{:?}", user_json);
-			send_json(user_json).await?;
-			return Ok(LoginResult::SignedUp)
+		if validate_email(&email).await.unwrap() {
+			let password = password_prompt(PasswordStep::First);
+			if password == password_prompt(PasswordStep::Second) {
+				let user = User {
+					username: username,
+					email: email,
+					password: hash(password)	
+				};
+				let user_json = serde_json::to_string(&user)?;
+				println!("{:?}", user_json);
+				send_json(user_json).await?;
+				return Ok(LoginResult::SignedUp)
+			}	
 		}
 	}
 }
