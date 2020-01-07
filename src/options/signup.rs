@@ -91,9 +91,9 @@ async fn email_prompt() -> Result<String> {
 
 
 pub async fn signup() -> Result<LoginResult> {
+	print!("\x1B[2J");
 	loop {
-		print!("\x1B[2J");
-
+		
 		let user = User {
 					username: username_prompt().await?,
 					email: email_prompt().await?,
@@ -107,8 +107,8 @@ pub async fn signup() -> Result<LoginResult> {
 			return Ok(LoginResult::SignedUp)
 		}
 
-		prompt_default("The email you entered is already being used. Please enter another email!", true);
-		continue;
+		print!("\x1B[2J");
+		println!("The email you entered is not valid. Please enter another email!");
 	}	
 }
 	
