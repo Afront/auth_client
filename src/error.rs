@@ -1,9 +1,11 @@
 use crate::LoginResult;
+use crate::io;
 
 #[derive(Debug)]
 pub enum Error {
 	Addr(addr::Error),
 	Email(validators::email::EmailError),
+	Io(io::Error),
 	Login(LoginResult),
 	Reqwest(reqwest::Error),
 	SerdeJSON(serde_json::Error),

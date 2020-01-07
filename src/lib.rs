@@ -23,7 +23,7 @@ fn hash(password: String) -> String {
 }
 
 pub mod error;
-mod io;
+pub mod io;
 
 pub mod options { 
 	pub use abort::abort;

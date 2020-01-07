@@ -1,4 +1,5 @@
-use crate::Result;
+use crate::{Error,Result};
+use crate::io;
 pub use crate::io::{PasswordStep, password_prompt};
 use crate::{hash,LoginResult};
 use addr::{Email, Host};
@@ -13,6 +14,13 @@ struct User {
 	email: String,
 	password: String,
 }
+
+#[derive(Serialize, Deserialize)]
+struct Username {
+	username: String,
+}
+
+
 
 async fn validate_email(email: &String) -> Result<bool> {
 	return match mailchecker::is_valid(&email) {
@@ -33,59 +41,65 @@ async fn send_json(user_json: String) -> Result<bool> {
 
 	println!("{:?}", &user_json);
 
-	let res = client.post(&server_url)
-		//.body(user_json)
-		.body("hi!")
+	return Ok(client.post(&server_url)
+		//.body(user_json), commented to prevent leaking private data
+		.body("hi")
 		.send()
-		.await?;
-
-	println!("{:?}", &res);
-
-	let user_registered = true;
-
-	Ok(user_registered)
+		.await?.text().await? == "true")
 }
 
-async fn is_username_invalid(username: &String) -> Result<bool> {
-	if reqwest::get(&("https://www.purgomalum.com/service/containsprofanity?text=".to_owned() + &username))
-		.await?
-		.text()
-		.await? == "true"{
-			return Ok(true);
-		}
-
+async fn username_prompt() -> Result<String> {
 	let client = reqwest::Client::new();
 	let server_url = env::var("SERVER_URL").expect("SERVER_URL must be set");
-	let duplicate_checker = client.post(&server_url)
-		.body(username)
-		.send()
-		.await?;
+	loop {
+	 	let username: String = prompt("Please enter your username");
+	 	let username_backup = username.clone();
 
-	Ok(false)
+	 	if reqwest::get(&("https://www.purgomalum.com/service/containsprofanity?text=".to_owned() + &username))
+			.await?
+			.text()
+			.await? == "false"{
+				print!("\x1B[2J");
+				
+				if client.post(&server_url)
+				.body(username)
+				.send()
+				.await?
+				.text()
+				.await? == "false" {
+					return Ok(username_backup)
+				}
+		}
+	
+	 	print!("\x1B[2J");
+		println!("Username taken!");
+	}
 }
 
+async fn email_prompt() -> Result<String> {
+ 	let email: String = prompt("Please enter your email");
+
+ 	if validate_email(&email).await.unwrap() {
+			return Ok(email)
+	}
+	prompt_default("The email you entered is not valid. Please enter another email!", true);
+	return Err(Error::Io(io::Error::InvalidUsername))
+}
 
 
 pub async fn signup() -> Result<LoginResult> {
 	loop {
 		print!("\x1B[2J");
-		let username: String = prompt("Please enter your username");
-		
-		if is_username_invalid(&username).await.unwrap() { //will be turned into a function that checks if someone has the username or not
-			prompt_default("Username taken!", true);
-			continue;
-		}
 
-		let email: String = prompt("Please enter your email");
-
-		if validate_email(&email).await.unwrap() {
+		let user = User {
+					username: username_prompt().await?,
+					email: prompt("Please enter your email"),
+					password: password_prompt(PasswordStep::First),	
+		};
+/*
+		if validate_email(&user.email).await.unwrap() {
 			let password = password_prompt(PasswordStep::First);
 			if password == password_prompt(PasswordStep::Second) {
-				let user = User {
-					username: username,
-					email: email,
-					password: hash(password)	
-				};
 				let user_json = serde_json::to_string(&user)?;
 				println!("{:?}", user_json);
 				if send_json(user_json).await? {
@@ -96,5 +110,6 @@ pub async fn signup() -> Result<LoginResult> {
 			}	
 		}
 		prompt_default("The email you entered is not valid. Please enter another email!", true);
-	}
+*/	}
+
 }
