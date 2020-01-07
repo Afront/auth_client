@@ -6,7 +6,7 @@ use std::process;
 
 async fn login_screen() -> Result<LoginResult>{
 	loop {
-		print!("\x1B[2J");
+		//print!("\x1B[2J");
 		let input: String = prompt("Hello! Would you like to (R)egister or (S)ign in? ");
 		match match input.trim().to_uppercase().as_str() {
 				"ABORT" | "EXIT" | "Q" | "QUIT" => abort(),

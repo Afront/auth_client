@@ -1,6 +1,6 @@
 use crate::Result;
-pub use crate::io::{PasswordStep, password_prompt};
-use crate::{hash,LoginResult};
+pub use crate::io::{LoginStep, password_prompt};
+use crate::{LoginResult};
 use promptly::prompt;
 use serde::{Deserialize, Serialize};
 
@@ -17,7 +17,7 @@ pub async fn signin() -> Result<LoginResult> {
 
 		let user = User {
 			id: id,
-			password: hash(password_prompt(PasswordStep::First))	
+			password: password_prompt(LoginStep::SignIn).unwrap()
 		};
 		let user_json = serde_json::to_string(&user)?;
 		println!("{:?}", user_json);

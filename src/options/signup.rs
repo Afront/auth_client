@@ -1,9 +1,9 @@
 use crate::{Error,Result};
 use crate::io;
-pub use crate::io::{PasswordStep, password_prompt};
-use crate::{hash,LoginResult};
+pub use crate::io::{LoginStep, password_prompt};
+use crate::{LoginResult};
 use addr::{Email, Host};
-use promptly::{prompt,prompt_default};
+use promptly::{prompt};
 use std::env;
 use serde::{Deserialize, Serialize};
 use validators::email::Email as Validator;
@@ -19,8 +19,6 @@ struct User {
 struct Username {
 	username: String,
 }
-
-
 
 async fn validate_email(email: &String) -> Result<bool> {
 	return match mailchecker::is_valid(&email) {
@@ -51,6 +49,8 @@ async fn send_json(user_json: String) -> Result<bool> {
 async fn username_prompt() -> Result<String> {
 	let client = reqwest::Client::new();
 	let server_url = env::var("SERVER_URL").expect("SERVER_URL must be set");
+	//add URL validator...
+	
 	loop {
 	 	let username: String = prompt("Please enter your username");
 	 	let username_backup = username.clone();
@@ -70,7 +70,7 @@ async fn username_prompt() -> Result<String> {
 					return Ok(username_backup)
 				}
 		}
-	
+
 	 	print!("\x1B[2J");
 		println!("Username taken!");
 	}
@@ -92,12 +92,12 @@ async fn email_prompt() -> Result<String> {
 
 pub async fn signup() -> Result<LoginResult> {
 	loop {
-		print!("\x1B[2J");
+//		print!("\x1B[2J");
 
 		let user = User {
 					username: username_prompt().await?,
 					email: email_prompt().await?,
-					password: password_prompt(PasswordStep::First),	
+					password: password_prompt(LoginStep::SignUp).unwrap(),	
 		};
 /*
 		if validate_email(&user.email).await.unwrap() {
