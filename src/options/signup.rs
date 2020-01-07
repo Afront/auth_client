@@ -92,27 +92,24 @@ async fn email_prompt() -> Result<String> {
 
 pub async fn signup() -> Result<LoginResult> {
 	loop {
-//		print!("\x1B[2J");
+		print!("\x1B[2J");
 
 		let user = User {
 					username: username_prompt().await?,
 					email: email_prompt().await?,
 					password: password_prompt(LoginStep::SignUp).unwrap(),	
 		};
-/*
-		if validate_email(&user.email).await.unwrap() {
-			let password = password_prompt(PasswordStep::First);
-			if password == password_prompt(PasswordStep::Second) {
-				let user_json = serde_json::to_string(&user)?;
-				println!("{:?}", user_json);
-				if send_json(user_json).await? {
-					return Ok(LoginResult::SignedUp)
-				}
-				prompt_default("The email you entered is already being used. Please enter another email!", true);
-				continue;
-			}	
-		}
-		prompt_default("The email you entered is not valid. Please enter another email!", true);
-*/	}
 
+		let user_json = serde_json::to_string(&user)?;
+		println!("{:?}", user_json);
+
+		if send_json(user_json).await? {
+			return Ok(LoginResult::SignedUp)
+		}
+
+		prompt_default("The email you entered is already being used. Please enter another email!", true);
+		continue;
+	}	
 }
+	
+
