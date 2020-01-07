@@ -77,13 +77,16 @@ async fn username_prompt() -> Result<String> {
 }
 
 async fn email_prompt() -> Result<String> {
- 	let email: String = prompt("Please enter your email");
-
- 	if validate_email(&email).await.unwrap() {
+	loop {
+		let email: String = prompt("Please enter your email");
+		
+		if validate_email(&email).await.unwrap() {
 			return Ok(email)
-	}
-	prompt_default("The email you entered is not valid. Please enter another email!", true);
-	return Err(Error::Io(io::Error::InvalidUsername))
+		}
+		
+		print!("\x1B[2J");
+		println!("The email you entered is not valid. Please enter another email!");
+	} 	
 }
 
 
@@ -93,7 +96,7 @@ pub async fn signup() -> Result<LoginResult> {
 
 		let user = User {
 					username: username_prompt().await?,
-					email: prompt("Please enter your email"),
+					email: email_prompt().await?,
 					password: password_prompt(PasswordStep::First),	
 		};
 /*
