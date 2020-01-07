@@ -1,12 +1,11 @@
-use std::io::Write;
 pub use error::Error;
-use crate::Result;
-use argonautica::Hasher;
 
+use crate::Result;
 use addr::{Email, Host};
+use argonautica::Hasher;
 use promptly::{prompt};
 use std::env;
-use serde::{Deserialize, Serialize};
+use std::io::Write;
 use validators::email::Email as Validator;
 
 pub mod error {

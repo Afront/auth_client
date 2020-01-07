@@ -1,12 +1,8 @@
-use crate::{Error,Result};
-use crate::io;
+use crate::Result;
 pub use crate::io::{LoginStep, email_prompt, password_prompt, username_prompt};
 use crate::{LoginResult};
-use addr::{Email, Host};
-use promptly::{prompt};
 use std::env;
 use serde::{Deserialize, Serialize};
-use validators::email::Email as Validator;
 
 #[derive(Serialize, Deserialize)]
 struct User {
