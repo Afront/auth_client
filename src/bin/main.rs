@@ -37,6 +37,5 @@ async fn main() -> Result<()> {
 	}
 
 	do_something();
-	
 	Ok(())
 }

@@ -29,8 +29,6 @@ async fn send_json(user_json: String) -> Result<bool> {
 		.await?.text().await? == "true")
 }
 
-
-
 pub async fn signup() -> Result<LoginResult> {
 	print!("\x1B[2J");
 	loop {
