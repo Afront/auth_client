@@ -3,6 +3,12 @@ pub use error::Error;
 use crate::Result;
 use argonautica::Hasher;
 
+use addr::{Email, Host};
+use promptly::{prompt};
+use std::env;
+use serde::{Deserialize, Serialize};
+use validators::email::Email as Validator;
+
 pub mod error {
 	#[derive(Debug)]
 	pub enum Error {
@@ -16,6 +22,33 @@ pub mod error {
 pub enum LoginStep {
 	SignUp,
 	SignIn
+}
+
+async fn validate_email(email: &String) -> Result<bool> {
+	return match mailchecker::is_valid(&email) {
+		true => match &email.parse::<Email>()?.host() {
+			Host::Domain(name) => match name.root().suffix().is_known() {
+				true => Ok(Validator::into_string(Validator::from_str(&email)?) == *email),
+				false => Ok(false),
+			},
+			Host::Ip(_) => Ok(true),
+		},
+		false => Ok(false),
+	}
+}
+
+
+pub async fn email_prompt() -> Result<String> {
+	loop {
+		let email: String = prompt("Please enter your email");
+		
+		if validate_email(&email).await.unwrap() {
+			return Ok(email)
+		}
+		
+		print!("\x1B[2J");
+		println!("The email you entered is not valid. Please enter another email!");
+	} 	
 }
 
 fn hash(password: String) -> String {
@@ -46,5 +79,35 @@ pub fn password_prompt(choice: LoginStep) -> Result<String> {
 			}
 		}
 		return Ok(hash(password))
+	}
+}
+
+pub async fn username_prompt() -> Result<String> {
+	let client = reqwest::Client::new();
+	let server_url = env::var("SERVER_URL").expect("SERVER_URL must be set");
+	//add URL validator...
+	
+	loop {
+	 	let username: String = prompt("Please enter your username");
+	 	let username_backup = username.clone();
+
+	 	if reqwest::get(&("https://www.purgomalum.com/service/containsprofanity?text=".to_owned() + &username))
+			.await?
+			.text()
+			.await? == "false"{
+				print!("\x1B[2J");
+				
+				if client.post(&server_url)
+				.body(username)
+				.send()
+				.await?
+				.text()
+				.await? == "false" {
+					return Ok(username_backup)
+				}
+		}
+
+	 	print!("\x1B[2J");
+		println!("Username taken!");
 	}
 }
