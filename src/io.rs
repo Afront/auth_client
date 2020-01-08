@@ -94,8 +94,6 @@ pub async fn username_prompt() -> Result<String> {
 			.await?
 			.text()
 			.await? == "false"{
-				print!("\x1B[2J");
-				
 				if client.post(&server_url)
 				.body(username)
 				.send()
