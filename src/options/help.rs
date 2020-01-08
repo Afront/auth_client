@@ -1,7 +1,7 @@
-use crate::Error;
+use crate::Error::Login;
 use crate::LoginResult;
 
-pub fn help() -> Result<LoginResult, Error> {
+pub fn help() -> crate::Result<LoginResult> {
 	println!("(H)elp  => Prints this help screen");
 	println!("(Q)uit | Abort | Exit  => Exit the app");
 	println!("Sign (U)p | Register | Signup => Sign up to the app");
@@ -10,7 +10,7 @@ pub fn help() -> Result<LoginResult, Error> {
 	let something_wrong_happened = false;
 	
 	match something_wrong_happened {
-		true => Err(Error::Login(LoginResult::Helped)),
+		true => Err(Login(LoginResult::Helped)),
 		false => Ok(LoginResult::Helped)
 	}
 }
