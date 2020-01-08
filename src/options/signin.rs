@@ -10,7 +10,7 @@ struct User {
 	password: String,
 }
 
-pub async fn signin() -> Result<LoginResult> {
+pub async fn signin(_url: String) -> Result<LoginResult> {
 	loop {
 		print!("\x1B[2J");
 		let id: String = prompt("Please enter your username or your email");

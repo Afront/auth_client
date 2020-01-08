@@ -1,7 +1,6 @@
 use crate::Result;
 pub use crate::io::{LoginStep, email_prompt, password_prompt, username_prompt};
 use crate::{LoginResult};
-use std::env;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
@@ -11,23 +10,23 @@ struct User {
 	password: String,
 }
 
-async fn send_json(user_json: String) -> Result<bool> {
+async fn send_json(user_json: String, url: &String) -> Result<bool> {
 	let client = reqwest::Client::new();
-	let server_url = env::var("SERVER_URL").expect("SERVER_URL must be set");
-
 	println!("{:?}", &user_json);
 
-	return Ok(client.post(&server_url)
+	return Ok(client.post(url)
 		.body(user_json)
 		.send()
 		.await?.text().await? == "true")
 }
 
-pub async fn signup() -> Result<LoginResult> {
+pub async fn signup(url: String) -> Result<LoginResult> {
+	//Add url validator?
+
 	print!("\x1B[2J");
 	loop {
 		let user = User {
-					username: username_prompt().await?,
+					username: username_prompt(&url).await?,
 					email: email_prompt().await?,
 					password: password_prompt(LoginStep::SignUp).unwrap(),	
 		};
@@ -35,7 +34,7 @@ pub async fn signup() -> Result<LoginResult> {
 		let user_json = serde_json::to_string(&user)?;
 		println!("{:?}", user_json);
 
-		if send_json(user_json).await? {
+		if send_json(user_json, &url).await? {
 			return Ok(LoginResult::SignedUp)
 		}
 
@@ -43,5 +42,3 @@ pub async fn signup() -> Result<LoginResult> {
 		println!("The email you entered is not valid. Please enter another email!");
 	}	
 }
-	
-

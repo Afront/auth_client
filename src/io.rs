@@ -4,7 +4,6 @@ use crate::Result;
 use addr::{Email, Host};
 use argonautica::Hasher;
 use promptly::{prompt};
-use std::env;
 use std::io::Write;
 use validators::email::Email as Validator;
 
@@ -81,10 +80,8 @@ pub fn password_prompt(choice: LoginStep) -> Result<String> {
 	}
 }
 
-pub async fn username_prompt() -> Result<String> {
+pub async fn username_prompt(url: &String) -> Result<String> {
 	let client = reqwest::Client::new();
-	let server_url = env::var("SERVER_URL").expect("SERVER_URL must be set");
-	//add URL validator...
 	
 	loop {
 	 	let username: String = prompt("Please enter your username");
@@ -94,7 +91,7 @@ pub async fn username_prompt() -> Result<String> {
 			.await?
 			.text()
 			.await? == "false"{
-				if client.post(&server_url)
+				if client.post(url)
 				.body(username)
 				.send()
 				.await?
