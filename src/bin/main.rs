@@ -11,8 +11,8 @@ async fn login_screen() -> Result<LoginResult>{
 		match match input.trim().to_uppercase().as_str() {
 				"ABORT" | "EXIT" | "Q" | "QUIT" => abort(),
 				"HELP" | "H" => help(),
-				"SIGN UP" | "SIGNUP" | "REGISTER" | "R" => signup().await,
-				"SIGN IN" | "SIGNIN" | "LOGIN" | "LOG IN" | "S" => signin().await,
+				"SIGN UP" | "SIGNUP" | "REGISTER" | "U" => signup().await,
+				"SIGN IN" | "SIGNIN" | "LOGIN" | "LOG IN" | "I" => signin().await,
 				_  => continue,
 		} {
 			Ok(LoginResult::Quit) => process::exit(0),
