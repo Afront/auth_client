@@ -18,8 +18,7 @@ async fn send_json(user_json: String) -> Result<bool> {
 	println!("{:?}", &user_json);
 
 	return Ok(client.post(&server_url)
-		//.body(user_json), commented to prevent leaking private data
-		.body("hi")
+		.body(user_json)
 		.send()
 		.await?.text().await? == "true")
 }
