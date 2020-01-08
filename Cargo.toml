@@ -11,7 +11,7 @@ addr = "0.2.0"
 argonautica = "0.2.0"
 mailchecker = "3.3.3"
 promptly = "0.2.0"
-quiche = "0.1.0"
+#quiche = "0.1.0"
 rpassword = "4.0.3"
 reqwest = "0.10.0"
 serde = { version = "1.0.104", features = ["derive"]}
