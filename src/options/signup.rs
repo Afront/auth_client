@@ -24,7 +24,7 @@ pub async fn signup(url: String) -> Result<LoginResult> {
 		let user_json = serde_json::to_string(&user)?;
 		println!("{:?}", user_json);
 
-		if send_json(user_json, &url).await? == "true" {
+		if send_json(user_json, &url).await?.text().await? == "true" {
 			return Ok(LoginResult::SignedUp)
 		}
 

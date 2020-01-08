@@ -49,14 +49,14 @@ async fn validate_email(email: &String) -> Result<bool> {
 }
 
 //Technically an IO function
-pub async fn send_json(user_json: String, url: &String) -> Result<String> {
+pub async fn send_json(user_json: String, url: &String) -> Result<reqwest::Response> {
 	let client = reqwest::Client::new();
 	println!("{:?}", &user_json);
 
 	return Ok(client.post(url)
 		.body(user_json)
 		.send()
-		.await?.text().await?)
+		.await?)
 }
 
 //Prompts
