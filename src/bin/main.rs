@@ -31,17 +31,13 @@ async fn login_screen() -> Result<LoginResult>{
 }
 
 
-fn do_something(){
-	unimplemented!();
+fn do_something(auth_code: &LoginResult){
+	println!("Hi! Your auth code is: {:?}", auth_code);
 }
 
 #[tokio::main]
 async fn main() -> Result<()> {
-	match login_screen().await {
-		Ok(_) => (),
-		Err(_) => (),
-	}
-
-	do_something();
+	let auth_code = login_screen().await.unwrap();
+	do_something(&auth_code);
 	Ok(())
 }
