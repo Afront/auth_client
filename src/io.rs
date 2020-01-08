@@ -22,6 +22,19 @@ pub enum LoginStep {
 	SignIn
 }
 
+//Helper functions
+fn hash(password: String) -> String {
+	let mut hasher = Hasher::default();
+	let hash = hasher
+		.with_password(password)
+		.with_salt("this will not be the actual salt")
+		.with_secret_key("this will not be the secret key, just a placeholder")
+		.hash()
+		.unwrap();
+	println!("{}", &hash);
+	hash
+}
+
 async fn validate_email(email: &String) -> Result<bool> {
 	return match mailchecker::is_valid(&email) {
 		true => match &email.parse::<Email>()?.host() {
@@ -35,7 +48,18 @@ async fn validate_email(email: &String) -> Result<bool> {
 	}
 }
 
+//Technically an IO function
+pub async fn send_json(user_json: String, url: &String) -> Result<String> {
+	let client = reqwest::Client::new();
+	println!("{:?}", &user_json);
 
+	return Ok(client.post(url)
+		.body(user_json)
+		.send()
+		.await?.text().await?)
+}
+
+//Prompts
 pub async fn email_prompt() -> Result<String> {
 	loop {
 		let email: String = prompt("Please enter your email");
@@ -48,19 +72,6 @@ pub async fn email_prompt() -> Result<String> {
 		println!("The email you entered is not valid. Please enter another email!");
 	} 	
 }
-
-fn hash(password: String) -> String {
-	let mut hasher = Hasher::default();
-	let hash = hasher
-		.with_password(password)
-		.with_salt("this will not be the actual salt")
-		.with_secret_key("this will not be the secret key, just a placeholder")
-		.hash()
-		.unwrap();
-	println!("{}", &hash);
-	hash
-}
-
 
 pub fn password_prompt(choice: LoginStep) -> Result<String> {
 	loop {

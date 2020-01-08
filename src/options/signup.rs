@@ -1,5 +1,5 @@
 use crate::Result;
-pub use crate::io::{LoginStep, email_prompt, password_prompt, username_prompt};
+pub use crate::io::{LoginStep, send_json, email_prompt, password_prompt, username_prompt};
 use crate::{LoginResult};
 use serde::{Deserialize, Serialize};
 
@@ -8,16 +8,6 @@ struct User {
 	username: String,
 	email: String,
 	password: String,
-}
-
-async fn send_json(user_json: String, url: &String) -> Result<bool> {
-	let client = reqwest::Client::new();
-	println!("{:?}", &user_json);
-
-	return Ok(client.post(url)
-		.body(user_json)
-		.send()
-		.await?.text().await? == "true")
 }
 
 pub async fn signup(url: String) -> Result<LoginResult> {
@@ -34,7 +24,7 @@ pub async fn signup(url: String) -> Result<LoginResult> {
 		let user_json = serde_json::to_string(&user)?;
 		println!("{:?}", user_json);
 
-		if send_json(user_json, &url).await? {
+		if send_json(user_json, &url).await? == "true" {
 			return Ok(LoginResult::SignedUp)
 		}
 
