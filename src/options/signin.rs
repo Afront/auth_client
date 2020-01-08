@@ -20,18 +20,17 @@ pub async fn signin(url: String) -> Result<LoginResult> {
 			password: password_prompt(LoginStep::SignIn).unwrap()
 		};
 		let user_json = serde_json::to_string(&user)?;
-		println!("{:?}", user_json);
 		let response = send_json(user_json, &url).await?;
 		
 		if response.status().as_u16() == 401 {
-		print!("\x1B[2J");
-		println!("The id or the password is incorrect.");
-		continue;
+			print!("\x1B[2J");
+			println!("The id or the password is incorrect.");
+			continue;
 		}
 		
 		return match response.status().is_success() {
 			true => Ok(LoginResult::AuthCode(String::from(response.text().await?))),
-			_ => Err(Login(LoginResult::AuthCode("There was an error with the connection: ".to_owned() + response.status().as_str())))
+			_ => Err(Login(LoginResult::AuthCode("An error occured: ".to_owned() + response.status().as_str())))
 		}		
 	}
 }

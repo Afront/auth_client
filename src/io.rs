@@ -31,7 +31,6 @@ fn hash(password: String) -> String {
 		.with_secret_key("this will not be the secret key, just a placeholder")
 		.hash()
 		.unwrap();
-	println!("{}", &hash);
 	hash
 }
 
@@ -51,7 +50,6 @@ async fn validate_email(email: &String) -> Result<bool> {
 //Technically an IO function
 pub async fn send_json(user_json: String, url: &String) -> Result<reqwest::Response> {
 	let client = reqwest::Client::new();
-	println!("{:?}", &user_json);
 
 	return Ok(client.post(url)
 		.body(user_json)
