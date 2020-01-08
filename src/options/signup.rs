@@ -11,11 +11,6 @@ struct User {
 	password: String,
 }
 
-#[derive(Serialize, Deserialize)]
-struct Username {
-	username: String,
-}
-
 async fn send_json(user_json: String) -> Result<bool> {
 	let client = reqwest::Client::new();
 	let server_url = env::var("SERVER_URL").expect("SERVER_URL must be set");
