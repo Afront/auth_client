@@ -1,5 +1,5 @@
 [package]
-name = "login-screen"
+name = "auth_client"
 version = "0.1.0"
 authors = ["Afront <3943720+Afront@users.noreply.github.com>"]
 edition = "2018"

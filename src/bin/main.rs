@@ -1,10 +1,10 @@
-use login_screen::Result;
-use login_screen::LoginResult;
-use login_screen::options::{abort,help,signup,signin};
+use auth_client::Result;
+use auth_client::LoginResult;
+use auth_client::options::{abort,help,signup,signin};
 use promptly::{prompt}; //use promptly::{prompt, prompt_default};
 use std::{env, process};
 
-async fn login_screen() -> Result<LoginResult>{
+async fn auth_client() -> Result<LoginResult>{
 	loop {
 		print!("\x1B[2J");
 	
@@ -37,7 +37,7 @@ fn do_something(auth_code: &LoginResult){
 
 #[tokio::main]
 async fn main() -> Result<()> {
-	let auth_code = login_screen().await.unwrap();
+	let auth_code = auth_client().await.unwrap();
 	do_something(&auth_code);
 	Ok(())
 }
